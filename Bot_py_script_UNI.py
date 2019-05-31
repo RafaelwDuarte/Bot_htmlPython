@@ -20,17 +20,18 @@ class MyHTMLParser(HTMLParser):
         if "select" in tag:
             Action=dict(attrs)["name"]
             dados_form.append(Action)
-
-
+#monta parser
 parser = MyHTMLParser()
 parser.feed(r.text)
 
-#print(dados_form)
+#print dicionario
 print(dados_form)
-#for i in dados_form:
+
+#remove botões:
 dados_form.remove("submit")
 dados_form.remove("gender")
 
+#Seta valores randomicos para o dicionario dados_form
 dados_form[0] = '{0}{1}{2}{3}{4}{5}{6}'.format(rstr.uppercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1))
 dados_form[1] = '{0}{1}'.format(rstr.uppercase(1), rstr.lowercase())
 gender = ['Masculino','Feminino']
