@@ -5,6 +5,7 @@ from html.parser import HTMLParser
 Action = str()
 dados_form_con = list()
 dados_form = list()
+dados = list()
 
 #Conta Requisições
 numero_vezes = int(input("Numero de Requisições: "))
@@ -40,6 +41,7 @@ parser.feed(r.text)
 #Remove Dados
 dados_form_con.remove("submit")
 dados_form_con.remove("gender")
+dados_form = copy.copy(dados_form_con)
 
 while cont < numero_vezes: 
 
@@ -56,6 +58,14 @@ while cont < numero_vezes:
     dados_form[5] = '{0}{1}'.format(rstr.rstr('3,8,9', 1), rstr.digits(7))
     sist = ['Debian', 'Ubuntu', 'Windows', 'Mac OS']
     dados_form[6] = random.choice(sist)
+    
+    #Juntando as listas 
+    cont1 = 0
+    while cont1 < len(dados_form):
+        dados.append(dados_form_con[cont1])
+        dados.append(dados_form[cont1])
+        cont1 = cont1 + 1
+    print (dados)
 
     #Postagem do formulario 
 
@@ -64,17 +74,16 @@ while cont < numero_vezes:
     arquivo = open('log.log','a')
     arquivo.write("\n" + "\n" + "-------Forumlario  " + str(cont+1) + "\n" + " Http code: " + str(http_code) + "\n" + " Campos:")
     for i in dados_form_con:
-        arquivo.writelines(i)
-        arquivo.write(',')
+       arquivo.writelines(i)
+       arquivo.write(',')
     arquivo.close()
     arquivo = open('log.log','a')
     arquivo.write("\n " + "Dados: ")
     for i in dados_form:
         arquivo.write(i)
         arquivo.write(',')
-    arquivo.close()
     cont = cont + 1
-
+    arquivo.write("\n" + "Resultado: ")
+    arquivo.close()
+    
 print ("Concluído com Sucesso")
-
-
