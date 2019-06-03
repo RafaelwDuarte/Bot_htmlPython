@@ -1,9 +1,5 @@
-import http.client, urllib.parse, requests
+import http.client, urllib.parse, requests, json, rstr, random, datetime, copy
 from html.parser import HTMLParser
-import rstr
-import random
-import copy
-import datetime
 
 #Inicialização de variaveis 
 Action = str()
@@ -13,6 +9,7 @@ dados_form = list()
 #Conta Requisições
 numero_vezes = int(input("Numero de Requisições: "))
 cont = 0 
+
 #Seta data 
 today  = datetime.datetime.today()
 today = today.strftime("%Y-%m-%d %H:%M")
@@ -35,6 +32,7 @@ class MyHTMLParser(HTMLParser):
         if "select" in tag:
             Action=dict(attrs)["name"]
             dados_form_con.append(Action)
+
 #Parser no HTML
 parser = MyHTMLParser()
 parser.feed(r.text)
@@ -48,7 +46,7 @@ while cont < numero_vezes:
     #Copia de Lista
     dados_form = copy.copy(dados_form_con)
 
-    #Popula lista
+    #Popula lista com valores randomicos
     dados_form[0] = '{0}{1}{2}{3}{4}{5}{6}'.format(rstr.uppercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1))
     dados_form[1] = '{0}{1}'.format(rstr.uppercase(1), rstr.lowercase(5,16))
     gender = ['Masculino','Feminino']
@@ -58,6 +56,9 @@ while cont < numero_vezes:
     dados_form[5] = '{0}{1}'.format(rstr.rstr('3,8,9', 1), rstr.digits(7))
     sist = ['Debian', 'Ubuntu', 'Windows', 'Mac OS']
     dados_form[6] = random.choice(sist)
+
+    #Postagem do formulario 
+
 
     #Log
     arquivo = open('log.log','a')
@@ -73,6 +74,7 @@ while cont < numero_vezes:
         arquivo.write(',')
     arquivo.close()
     cont = cont + 1
+
 print ("Concluído com Sucesso")
 
 
