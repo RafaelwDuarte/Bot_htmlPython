@@ -62,15 +62,11 @@ def extrenal_data(mode, numero_vezes, dm):
     arquivos_2 = open(dm,'r')
     while cont < numero_vezes:
         texto = arquivos_2.readlines()
-        for linha in texto :
-            print(linha)
+        dados_form_con=texto
         cont = cont + 1
+        together_list()  
         log(cont, mode)
     arquivos_2.close()
-        #dados_form[0]= 
-        #cont = cont + 1
-        #together_list()  
-        #log(cont, mode)
 
 #Menu
 def mode():
@@ -124,7 +120,7 @@ def log(cont, mode):
 def together_list():
     cont1 = 0
     while cont1 < len(dados_form):
-        dados.append(dados_form_con[cont1])
+        dados.append(dados_form_con[cont1]+":")
         dados.append(dados_form[cont1]+",")
         cont1 = cont1 + 1
 
