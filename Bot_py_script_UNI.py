@@ -1,14 +1,12 @@
 import http.client, urllib.parse, requests, json, rstr, random, datetime, copy
 from html.parser import HTMLParser
-#Functions 
-
-
 
 #Inicialização de variaveis 
 Action = str()
 dados_form_con = list()
 dados_form = list()
 dados = list()
+mode = ""
 
 #Requisição HTTP
 r = requests.get('http://www.agexcom.com.br/hackform/index.php')
@@ -32,10 +30,6 @@ parser.feed(r.text)
 dados_form_con.remove("submit")
 dados_form_con.remove("gender")
 dados_form = copy.copy(dados_form_con)
-
-
-#Mode
-mode = ""
 
 #Copia de Lista
 def copy_list():
@@ -135,3 +129,7 @@ print (dados)
 
 mode()
 wait = input("Concluído")
+
+   
+
+
