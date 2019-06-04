@@ -1,24 +1,14 @@
 import http.client, urllib.parse, requests, json, rstr, random, datetime, copy
 from html.parser import HTMLParser
+#Functions 
+
+
 
 #Inicialização de variaveis 
 Action = str()
 dados_form_con = list()
 dados_form = list()
 dados = list()
-
-#Conta Requisições
-numero_vezes = int(input("Numero de Requisições: "))
-cont = 0 
-
-#Seta data 
-today  = datetime.datetime.today()
-today = today.strftime("%Y-%m-%d %H:%M")
-
-#Loga Inicio
-arquivo = open('log.log','a')
-arquivo.write("\n" + "\n" + "---> Inicio do Script  " + today + " -  Numero de repetições:  " + str(numero_vezes))
-arquivo.close()
 
 #Requisição HTTP
 r = requests.get('http://www.agexcom.com.br/hackform/index.php')
@@ -43,47 +33,105 @@ dados_form_con.remove("submit")
 dados_form_con.remove("gender")
 dados_form = copy.copy(dados_form_con)
 
-while cont < numero_vezes: 
 
-    #Copia de Lista
+#Mode
+mode = ""
+
+#Copia de Lista
+def copy_list():
     dados_form = copy.copy(dados_form_con)
 
-    #Popula lista com valores randomicos
-    dados_form[0] = '{0}{1}{2}{3}{4}{5}{6}'.format(rstr.uppercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1))
-    dados_form[1] = '{0}{1}'.format(rstr.uppercase(1), rstr.lowercase(5,16))
-    gender = ['Masculino','Feminino']
-    dados_form[2] = random.choice(gender)
-    dados_form[3] = '{0}{1}/{2}{3}/{4}{5}{6}'.format(rstr.rstr('012', 1), rstr.digits(1), rstr.rstr('01', 1), rstr.rstr('012', 1), rstr.rstr('12', 1), rstr.rstr('09', 2), rstr.digits(1))
-    dados_form[4] = '{0}@{1}.com.{2}'.format(rstr.uppercase(exclude='@#<"^;:´`?+=[]~*{}'), rstr.lowercase(5,15), rstr.lowercase(2))
-    dados_form[5] = '{0}{1}'.format(rstr.rstr('3,8,9', 1), rstr.digits(7))
-    sist = ['Debian', 'Ubuntu', 'Windows', 'Mac OS']
-    dados_form[6] = random.choice(sist)
-    
-    #Juntando as listas 
+#Popula lista com valores randomicos
+
+def random_data(mode, numero_vezes):
+    cont = 0 
+    while cont < numero_vezes:
+        dados_form[0] = '{0}{1}{2}{3}{4}{5}{6}'.format(rstr.uppercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1))
+        dados_form[1] = '{0}{1}'.format(rstr.uppercase(1), rstr.lowercase(5,16))
+        gender = ['Masculino','Feminino']
+        dados_form[2] = random.choice(gender)
+        ano_inic = ["199","200","201"]
+        ano_random = random.choice(ano_inic) + rstr.digits(1)
+        data_rand_nasc = '{0}{1}/{2}{3}/'.format(rstr.rstr('012', 1), rstr.digits(1), rstr.rstr('01', 1), rstr.rstr('012', 1))
+        data_rand_nasc = data_rand_nasc + ano_random
+        dados_form[3] = data_rand_nasc
+        dados_form[4] = '{0}@{1}.com.{2}'.format(rstr.uppercase(exclude='@#<"^;:´`?+=[]~*{}'), rstr.lowercase(5,15), rstr.lowercase(2))
+        dados_form[5] = '{0}{1}'.format(rstr.rstr('3,8,9', 1), rstr.digits(7))
+        sist = ['Debian', 'Ubuntu', 'Windows', 'Mac OS']
+        dados_form[6] = random.choice(sist)
+        together_list()
+        cont = cont + 1
+        log(cont, mode)
+
+#Popula com dados de arquivo externo
+def extrenal_data(mode, numero_vezes, dm):
+    cont = 0 
+    arquivos_2 = open(dm,'a')
+    while cont < numero_vezes:
+        #dados_form[0]= 
+        cont = cont + 1
+        together_list()  
+        log(cont, mode)
+    arquivos_2.close
+
+#Menu
+def mode():
+
+    copy_list()
+
+    #Conta Requisições
+    numero_vezes = int(input("Numero de Requisições: "))
+
+    #Seta data 
+    today  = datetime.datetime.today()
+    today = today.strftime("%Y-%m-%d %H:%M")
+
+    #Loga Inicio
+    arquivo = open('log.log','a')
+    arquivo.write("\n" + "\n" + "---> Inicio do Script  " + today + " -  Numero de repetições:  " + str(numero_vezes))
+    arquivo.close()
+
+    mode = str(input("Escolha a letra do modo de inserção de dados" + "\n" "[r] random" + "\n" + "[e] arquivo externo" + "\n"))
+    if (mode == "r"):
+        random_data(mode, numero_vezes)
+
+    elif (mode == "e"):
+        dm = input("caminho do arquivo: ")
+        extrenal_data(mode, numero_vezes, dm)
+
+    else:
+        print ("Opção Invalida")
+        arquivo = open('log.log','a')
+        arquivo.write(" - Opção invavida")
+        arquivo.close()
+        exit
+#Log 
+def log(cont, mode):
+    arquivo = open('log.log','a')
+    arquivo.write("\n" + "\n" + "-------Forumlario  " + str(cont) + "\n" + " Http code: " + str(http_code) + "\n" + "mode: " + mode + "\n")    
+    for i in dados_form_con:
+        arquivo.writelines(i)
+        arquivo.write(',')
+    arquivo.write("\n")
+    arquivo.close()
+    arquivo = open('log.log','a')
+    for i in dados_form:
+        arquivo.write(i)
+        arquivo.write(',')
+        cont = cont + 1
+    arquivo.write("\n")
+    arquivo.close()
+
+#Juntando as listas 
+def together_list():
     cont1 = 0
     while cont1 < len(dados_form):
         dados.append(dados_form_con[cont1])
         dados.append(dados_form[cont1])
         cont1 = cont1 + 1
-    print (dados)
 
-    #Postagem do formulario 
+#Postagem do formulario 
+print (dados)
 
-
-    #Log
-    arquivo = open('log.log','a')
-    arquivo.write("\n" + "\n" + "-------Forumlario  " + str(cont+1) + "\n" + " Http code: " + str(http_code) + "\n" + " Campos:")
-    for i in dados_form_con:
-       arquivo.writelines(i)
-       arquivo.write(',')
-    arquivo.close()
-    arquivo = open('log.log','a')
-    arquivo.write("\n " + "Dados: ")
-    for i in dados_form:
-        arquivo.write(i)
-        arquivo.write(',')
-    cont = cont + 1
-    arquivo.write("\n" + "Resultado: ")
-    arquivo.close()
-    
-print ("Concluído com Sucesso")
+mode()
+wait = input("Concluído")
