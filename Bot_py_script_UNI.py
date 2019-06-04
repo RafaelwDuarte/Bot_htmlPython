@@ -6,7 +6,6 @@ Action = str()
 dados_form_con = list()
 dados_form = list()
 dados = list()
-mode = ""
 
 #Requisição HTTP
 r = requests.get('http://www.agexcom.com.br/hackform/index.php')
@@ -60,13 +59,18 @@ def random_data(mode, numero_vezes):
 #Popula com dados de arquivo externo
 def extrenal_data(mode, numero_vezes, dm):
     cont = 0 
-    arquivos_2 = open(dm,'a')
+    arquivos_2 = open(dm,'r')
     while cont < numero_vezes:
-        #dados_form[0]= 
+        texto = arquivos_2.readlines()
+        for linha in texto :
+            print(linha)
         cont = cont + 1
-        together_list()  
         log(cont, mode)
-    arquivos_2.close
+    arquivos_2.close()
+        #dados_form[0]= 
+        #cont = cont + 1
+        #together_list()  
+        #log(cont, mode)
 
 #Menu
 def mode():
@@ -121,15 +125,14 @@ def together_list():
     cont1 = 0
     while cont1 < len(dados_form):
         dados.append(dados_form_con[cont1])
-        dados.append(dados_form[cont1])
+        dados.append(dados_form[cont1]+",")
         cont1 = cont1 + 1
 
 #Postagem do formulario 
-print (dados)
+def post_list():
+    print ("post")
+
 
 mode()
+
 wait = input("Concluído")
-
-   
-
-
