@@ -6,9 +6,12 @@ Action = str()
 dados_form_con = list()
 dados_form = list()
 dados = list()
+act = list()
 
 #Requisição HTTP
-r = requests.get('http://www.agexcom.com.br/hackform/index.php')
+site = input("Site: ")
+#r = requests.get('http://www.agexcom.com.br/hackform/index.php')
+r = requests.get(site)
 http_code = r.status_code
 
 #Pesquisar no parser e monta uma lista com os parametros
@@ -20,10 +23,16 @@ class MyHTMLParser(HTMLParser):
         if "select" in tag:
             Action=dict(attrs)["name"]
             dados_form_con.append(Action)
+        if "form" in tag:
+            Action=dict(attrs)['action']
+            act.append(Action)
 
 #Parser no HTML
 parser = MyHTMLParser()
 parser.feed(r.text)
+
+#seleciona Action
+print(act)
 
 #Remove Dados
 dados_form_con.remove("submit")
@@ -128,7 +137,17 @@ def together_list():
 def post_list():
     print ("post")
 
+def payload(site, act):
+    payload={dados_form_con[0]:dados_form[0],dados_form_con[1]:dados_form[1],dados_form_con[2]:dados_form[2],dados_form_con[3]:dados_form[3],dados_form_con[4]:dados_form_con[4],dados_form[5]:dados_form[5],dados_form_con[6]:dados_form[6]}
+    site = site + "/" + act[0] 
+    enviar = requests.post(site, payload)
+    print(str(payload), enviar)
+    print("Status Code:", enviar.status_code)
+    print(enviar.reason)
 
 mode()
+payload(site, act)
+
+
 
 wait = input("Concluído")
