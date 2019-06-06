@@ -31,9 +31,6 @@ class MyHTMLParser(HTMLParser):
 parser = MyHTMLParser()
 parser.feed(r.text)
 
-#seleciona Action
-print(act)
-
 #Remove Dados
 dados_form_con.remove("submit")
 dados_form_con.remove("gender")
@@ -43,6 +40,14 @@ dados_form = copy.copy(dados_form_con)
 def copy_list():
     dados_form = copy.copy(dados_form_con)
 
+#Postagem do formulario 
+def payload(site, act):
+    payload={dados_form_con[0]:dados_form[0],dados_form_con[1]:dados_form[1],dados_form_con[2]:dados_form[2],dados_form_con[3]:dados_form[3],dados_form_con[4]:dados_form[4],dados_form_con[5]:dados_form[5],dados_form_con[6]:dados_form[6]}
+    site = site + "/" + act[0] 
+    enviar = requests.post(site, payload)
+    print("Envio Inciando")
+    print( "Status Code:", enviar.status_code)
+    print("Envio", enviar.reason)
 #Popula lista com valores randomicos
 
 def random_data(mode, numero_vezes):
@@ -57,13 +62,15 @@ def random_data(mode, numero_vezes):
         data_rand_nasc = '{0}{1}/{2}{3}/'.format(rstr.rstr('012', 1), rstr.digits(1), rstr.rstr('01', 1), rstr.rstr('012', 1))
         data_rand_nasc = data_rand_nasc + ano_random
         dados_form[3] = data_rand_nasc
-        dados_form[4] = '{0}@{1}.com.{2}'.format(rstr.uppercase(exclude='@#<"^;:´`?+=[]~*{}'), rstr.lowercase(5,15), rstr.lowercase(2))
+        dados_form[4] = '{0}@{1}.com.{2}'.format(rstr.lowercase(exclude='@#<"^;:´`?+=[]~*{}'), rstr.lowercase(5,15), rstr.lowercase(2))
         dados_form[5] = '{0}{1}'.format(rstr.rstr('3,8,9', 1), rstr.digits(7))
         sist = ['Debian', 'Ubuntu', 'Windows', 'Mac OS']
         dados_form[6] = random.choice(sist)
         together_list()
         cont = cont + 1
+        payload(site, act)
         log(cont, mode)
+        
 
 #Popula com dados de arquivo externo
 def extrenal_data(mode, numero_vezes, dm):
@@ -74,8 +81,11 @@ def extrenal_data(mode, numero_vezes, dm):
         dados_form_con=texto
         cont = cont + 1
         together_list()  
+        payload(site, act)
         log(cont, mode)
+
     arquivos_2.close()
+    
 
 #Menu
 def mode():
@@ -111,7 +121,7 @@ def mode():
 #Log 
 def log(cont, mode):
     arquivo = open('log.log','a')
-    arquivo.write("\n" + "\n" + "-------Forumlario  " + str(cont) + "\n" + " Http code: " + str(http_code) + "\n" + "mode: " + mode + "\n")    
+    arquivo.write("\n" + "\n" + "-------Forumlario  " + str(cont) + "\n" + "\n" + "mode: " + mode + "\n")    
     for i in dados_form_con:
         arquivo.writelines(i)
         arquivo.write(',')
@@ -133,21 +143,6 @@ def together_list():
         dados.append(dados_form[cont1]+",")
         cont1 = cont1 + 1
 
-#Postagem do formulario 
-def post_list():
-    print ("post")
-
-def payload(site, act):
-    payload={dados_form_con[0]:dados_form[0],dados_form_con[1]:dados_form[1],dados_form_con[2]:dados_form[2],dados_form_con[3]:dados_form[3],dados_form_con[4]:dados_form_con[4],dados_form[5]:dados_form[5],dados_form_con[6]:dados_form[6]}
-    site = site + "/" + act[0] 
-    enviar = requests.post(site, payload)
-    print(str(payload), enviar)
-    print("Status Code:", enviar.status_code)
-    print(enviar.reason)
-
 mode()
-payload(site, act)
 
-
-
-wait = input("Concluído")
+wait = input("---------")
