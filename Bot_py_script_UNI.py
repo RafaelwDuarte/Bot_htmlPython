@@ -48,6 +48,8 @@ def payload(site, act):
     print("Envio Inciando")
     print( "Status Code:", enviar.status_code)
     print("Envio", enviar.reason)
+
+
 #Popula lista com valores randomicos
 
 def random_data(mode, numero_vezes):
@@ -57,7 +59,7 @@ def random_data(mode, numero_vezes):
         dados_form[1] = '{0}{1}'.format(rstr.uppercase(1), rstr.lowercase(5,16))
         gender = ['Masculino','Feminino']
         dados_form[2] = random.choice(gender)
-        ano_inic = ["199","200","201"]
+        ano_inic = ["198","197","196","195","194","193","192","199","200","201"]
         ano_random = random.choice(ano_inic) + rstr.digits(1)
         data_rand_nasc = '{0}{1}/{2}{3}/'.format(rstr.rstr('012', 1), rstr.digits(1), rstr.rstr('01', 1), rstr.rstr('012', 1))
         data_rand_nasc = data_rand_nasc + ano_random
