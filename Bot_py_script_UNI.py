@@ -14,6 +14,7 @@ nascimento = list()
 email = list()
 fone = list()
 so = list()
+Progreso = int(1)
 
 #Requisição HTTP
 site = input("Site: ")
@@ -48,19 +49,23 @@ def copy_list():
     dados_form = copy.copy(dados_form_con)
 
 #Postagem do formulario 
-def payload(site, act):
+def payload(site, act, cont, numero_vezes):
     payload={dados_form_con[0]:dados_form[0],dados_form_con[1]:dados_form[1],dados_form_con[2]:dados_form[2],dados_form_con[3]:dados_form[3],dados_form_con[4]:dados_form[4],dados_form_con[5]:dados_form[5],dados_form_con[6]:dados_form[6]}
     site = site + "/" + act[0] 
     enviar = requests.post(site, payload)
-    print(payload)
-    print("Envio Inciando")
-    print( "Status Code:", enviar.status_code)
-    print("Envio", enviar.reason)
+    envioresp = enviar.status_code
+    Progreso = cont
+    if (envioresp == 200):
+        print ("Requisição" , Progreso , "/" , numero_vezes, " - Sucesso")
+    else:
+        print ("Requisição" , Progreso , "/" , numero_vezes, " - Erro") 
+    #print("Envio", enviar.reason)
+    
 
 
 #Popula lista com valores randomicos
 
-def random_data(mode, numero_vezes):
+def random_data(mode, numero_vezes, Progreso):
     cont = 0 
     while cont < numero_vezes:
         dados_form[0] = '{0}{1}{2}{3}{4}{5}{6}'.format(rstr.uppercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1), rstr.rstr('aeiou', 1), rstr.lowercase(1))
@@ -78,12 +83,12 @@ def random_data(mode, numero_vezes):
         dados_form[6] = random.choice(sist)
         together_list()
         cont = cont + 1
-        payload(site, act, payload)
-        log(cont, mode)
+        payload(site, act, cont, numero_vezes)
+        log(cont, mode, dados_form)
         
 
 #Popula com dados de arquivo externo
-def extrenal_data(mode, numero_vezes, dnomes, dsobre, dgenero,dnascimento,demail,dfone,dso):
+def extrenal_data(mode, numero_vezes, dnomes, dsobre, dgenero,dnascimento,demail,dfone,dso, Progreso):
     cont = 0 
     arquivos_2 = open(dnomes,'r')
     nomes = arquivos_2.readlines()
@@ -115,10 +120,10 @@ def extrenal_data(mode, numero_vezes, dnomes, dsobre, dgenero,dnascimento,demail
         dados_form[5]=fone[cont].rstrip('\n')
         dados_form[6]=so[cont].rstrip('\n')
         cont = cont + 1
-        payload(site, act)
-        log(cont, mode, payload)
+        payload(site, act, cont, numero_vezes)
+        log(cont, mode, dados_form)
 #Popula com constantes 
-def constantes(mode, numero_vezes):
+def constantes(mode, numero_vezes, Progreso):
     cont = 0
     dados_form[0]=input("Nome: ")
     dados_form[1]=input("Sobrenome: ")
@@ -147,7 +152,7 @@ def constantes(mode, numero_vezes):
         exit
     while cont < numero_vezes:
         cont = cont + 1
-        payload(site, act)
+        payload(site, act, cont, numero_vezes)
         log(cont, mode, dados_form)
 
 #Menu
@@ -169,7 +174,7 @@ def mode():
 
     mode = str(input("Escolha a letra do modo de inserção de dados" + "\n" "[R]random" + "\n" + "[E]arquivo externo" + "\n" + "[C]Passar dados Manualmente \n"))
     if (mode == "R"):
-        random_data(mode, numero_vezes)
+        random_data(mode, numero_vezes, Progreso )
 
     elif (mode == "E"):
         dnomes = input("caminho do arquivo de nomes: \n")
@@ -179,10 +184,10 @@ def mode():
         demail = input("caminho do arquivo de emails: \n")
         dfone = input("caminho do arquivo de telefones \n")
         dso = input("caminho do arquivo de sistema operacional \n")
-        extrenal_data(mode, numero_vezes, dnomes, dsobre, dgenero,dnascimento,demail,dfone,dso)
+        extrenal_data(mode, numero_vezes, dnomes, dsobre, dgenero,dnascimento,demail,dfone,dso, Progreso)
 
     elif (mode == "C"):
-        constantes(mode, numero_vezes)
+        constantes(mode, numero_vezes, Progreso)
 
     else:
         print ("Opção Invalida")
@@ -211,4 +216,6 @@ def together_list():
 
 mode()
 
-wait = input("---------")
+
+
+wait = input("  ")
