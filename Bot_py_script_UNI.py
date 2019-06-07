@@ -7,6 +7,13 @@ dados_form_con = list()
 dados_form = list()
 dados = list()
 act = list()
+nomes = list()
+sobrenomes = list()
+genero = list()
+nascimento = list()
+email = list()
+fone = list()
+so = list()
 
 #Requisição HTTP
 site = input("Site: ")
@@ -45,6 +52,7 @@ def payload(site, act):
     payload={dados_form_con[0]:dados_form[0],dados_form_con[1]:dados_form[1],dados_form_con[2]:dados_form[2],dados_form_con[3]:dados_form[3],dados_form_con[4]:dados_form[4],dados_form_con[5]:dados_form[5],dados_form_con[6]:dados_form[6]}
     site = site + "/" + act[0] 
     enviar = requests.post(site, payload)
+    print(payload)
     print("Envio Inciando")
     print( "Status Code:", enviar.status_code)
     print("Envio", enviar.reason)
@@ -70,24 +78,77 @@ def random_data(mode, numero_vezes):
         dados_form[6] = random.choice(sist)
         together_list()
         cont = cont + 1
-        payload(site, act)
+        payload(site, act, payload)
         log(cont, mode)
         
 
 #Popula com dados de arquivo externo
-def extrenal_data(mode, numero_vezes, dm):
+def extrenal_data(mode, numero_vezes, dnomes, dsobre, dgenero,dnascimento,demail,dfone,dso):
     cont = 0 
-    arquivos_2 = open(dm,'r')
-    while cont < numero_vezes:
-        texto = arquivos_2.readlines()
-        dados_form_con=texto
-        cont = cont + 1
-        together_list()  
-        payload(site, act)
-        log(cont, mode)
-
+    arquivos_2 = open(dnomes,'r')
+    nomes = arquivos_2.readlines()
     arquivos_2.close()
-    
+    arquivos_2 = open(dsobre,'r')
+    sobrenomes = arquivos_2.readlines()
+    arquivos_2.close()
+    arquivos_2 = open(dgenero,'r')
+    genero = arquivos_2.readlines()
+    arquivos_2.close()
+    arquivos_2 = open(dnascimento,'r')
+    nascimento = arquivos_2.readlines()
+    arquivos_2.close()
+    arquivos_2 = open(demail,'r')
+    email = arquivos_2.readlines()
+    arquivos_2.close()
+    arquivos_2 = open(dfone,'r')
+    fone = arquivos_2.readlines()
+    arquivos_2.close()
+    arquivos_2 = open(dso,'r')
+    so = arquivos_2.readlines()
+    arquivos_2.close()
+    while cont < numero_vezes:
+        dados_form[0]=nomes[cont].rstrip('\n')
+        dados_form[1]=sobrenomes[cont].rstrip('\n')
+        dados_form[2]=genero[cont].rstrip('\n')
+        dados_form[3]=nascimento[cont].rstrip('\n')
+        dados_form[4]=email[cont].rstrip('\n')
+        dados_form[5]=fone[cont].rstrip('\n')
+        dados_form[6]=so[cont].rstrip('\n')
+        cont = cont + 1
+        payload(site, act)
+        log(cont, mode, payload)
+#Popula com constantes 
+def constantes(mode, numero_vezes):
+    cont = 0
+    dados_form[0]=input("Nome: ")
+    dados_form[1]=input("Sobrenome: ")
+    genero=input("Genero: [M]Masculino / [F]Feminino \n")
+    if (genero=="M"):
+        dados_form[2]="Masculino"
+    elif (genero=="F"):
+        dados_form[2]="Feminino"
+    else:
+        print("Opção Invalida")
+        exit
+    dados_form[3]=input("Data de Nascimento(Padrão dd/mm/aaaa): \n")
+    dados_form[4]=input("Email: \n")
+    dados_form[5]=input("Telefone: \n")
+    genero=input("Sistema Operacional \n -[D]Debian, [U]Ubuntu, [W]Windows, [M]Mac OS \n")
+    if (genero=="D"):
+        dados_form[6]="Debian"
+    elif (genero=="U"):
+        dados_form[6]="Ubuntu"
+    elif (genero=="W"):
+        dados_form[6]="Windows"
+    elif (genero=="M"):
+        dados_form[6]="Mac OS"
+    else:
+        print("Opção Invalida")
+        exit
+    while cont < numero_vezes:
+        cont = cont + 1
+        payload(site, act)
+        log(cont, mode, dados_form)
 
 #Menu
 def mode():
@@ -106,13 +167,22 @@ def mode():
     arquivo.write("\n" + "\n" + "---> Inicio do Script  " + today + " -  Numero de repetições:  " + str(numero_vezes))
     arquivo.close()
 
-    mode = str(input("Escolha a letra do modo de inserção de dados" + "\n" "[r] random" + "\n" + "[e] arquivo externo" + "\n"))
-    if (mode == "r"):
+    mode = str(input("Escolha a letra do modo de inserção de dados" + "\n" "[R]random" + "\n" + "[E]arquivo externo" + "\n" + "[C]Passar dados Manualmente \n"))
+    if (mode == "R"):
         random_data(mode, numero_vezes)
 
-    elif (mode == "e"):
-        dm = input("caminho do arquivo: ")
-        extrenal_data(mode, numero_vezes, dm)
+    elif (mode == "E"):
+        dnomes = input("caminho do arquivo de nomes: \n")
+        dsobre = input("caminho do arquivo de sobrenomes: \n")
+        dgenero = input("caminho do arquivo de generos: \n")
+        dnascimento = input("caminho do arquivo de datas de nascimento: \n")
+        demail = input("caminho do arquivo de emails: \n")
+        dfone = input("caminho do arquivo de telefones \n")
+        dso = input("caminho do arquivo de sistema operacional \n")
+        extrenal_data(mode, numero_vezes, dnomes, dsobre, dgenero,dnascimento,demail,dfone,dso)
+
+    elif (mode == "C"):
+        constantes(mode, numero_vezes)
 
     else:
         print ("Opção Invalida")
@@ -121,21 +191,15 @@ def mode():
         arquivo.close()
         exit
 #Log 
-def log(cont, mode):
+def log(cont, mode, dados_form):
     arquivo = open('log.log','a')
     arquivo.write("\n" + "\n" + "-------Forumlario  " + str(cont) + "\n" + "\n" + "mode: " + mode + "\n")    
-    for i in dados_form_con:
+    for i in dados_form:
         arquivo.writelines(i)
         arquivo.write(',')
     arquivo.write("\n")
     arquivo.close()
     arquivo = open('log.log','a')
-    for i in dados_form:
-        arquivo.write(i)
-        arquivo.write(',')
-        cont = cont + 1
-    arquivo.write("\n")
-    arquivo.close()
 
 #Juntando as listas 
 def together_list():
