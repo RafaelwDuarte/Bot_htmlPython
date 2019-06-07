@@ -218,4 +218,4 @@ mode()
 
 
 
-wait = input("  ")
+wait = input("---------------")
